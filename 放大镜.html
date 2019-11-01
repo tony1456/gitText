@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Document</title>
+<style>
+*{
+    margin: 0;
+    padding: 0;
+}
+.wrap{
+    width: 1200px;
+    margin: 0 auto;
+    padding-top: 50px;
+    position: relative;
+}
+.left{
+    width: 350px;
+    height: 350px;
+    float: left;
+    border: 1px solid #ddd;
+    position: relative;
+}
+.left img{
+    width: 350px;
+    height: 350px;
+    display: block;
+}
+.con{
+    float: left;
+    width: 814px;
+    height: 462px;
+    margin-left: 20px;
+}
+.right{
+    display: none;
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    left: 360px;
+    top: 50px;
+    border: 1px solid pink;
+    overflow: hidden;
+}
+.right img{
+    width: 800px;
+    height: 800px;
+    display: block;
+    position: absolute;
+}
+.mask{
+    width: 175px;
+    height: 175px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: orange;
+    opacity: 0.4;
+    cursor: move;
+    display: none;
+}
+
+</style>
+</head>
+<body>
+
+<div class="wrap">
+    <div class="left">
+        <img src="images/min.jpg" alt="">
+        <div class="mask"></div>
+    </div>
+    <div class="right">
+        <img src="images/max.jpg" alt="">
+    </div>
+    <div class="con">
+        <img src="images/msg.png" alt="">
+    </div>
+</div>
+
+
+<script>
+var left = document.querySelector('.left');
+var mask = document.querySelector('.mask');
+var right = document.querySelector('.right');
+var maxImg = right.querySelector('img');
+
+left.onmouseenter = function (){
+    mask.style.display = 'block';
+    right.style.display = 'block';
+}
+left.onmouseleave = function (){
+    mask.style.display = 'none';
+    right.style.display = 'none';
+}
+left.onmousemove = function (ev){
+    var e = ev||window.event;
+    var maskL = e.clientX - offset(left).left - mask.clientWidth/2;//蒙版的left值
+    var maskT = e.clientY - offset(left).top - mask.clientHeight/2;//蒙版的top值
+
+    // 边界值判断
+    if (maskL <= 0) {//最小值
+        maskL = 0;
+    }
+    if (maskL >= left.clientWidth-mask.clientWidth) {// 最大值
+        maskL = left.clientWidth-mask.clientWidth;
+    }
+    if (maskT <= 0) {//最小值
+        maskT = 0;
+    }
+    if (maskT >= left.clientHeight-mask.clientHeight) {// 最大值
+        maskT = left.clientHeight-mask.clientHeight;
+    }
+    mask.style.left = maskL + 'px';
+    mask.style.top = maskT + 'px';
+
+    // 移动大图(和mask移动方向相反)
+    var scaleX = maskL/(left.clientWidth-mask.clientWidth);
+    var scaleY = maskT/(left.clientHeight-mask.clientHeight);
+
+    var imgL = scaleX * (maxImg.clientWidth - right.clientWidth);
+    var imgT = scaleY * (maxImg.clientHeight - right.clientHeight);
+    maxImg.style.left = -imgL + 'px';
+    maxImg.style.top = -imgT + 'px';
+}
+
+// 封装获取元素到body的距离
+function offset(dom){
+    var l = 0;
+    var t = 0;
+    var bdl = dom.clientLeft;//元素的左边框
+    var bdt = dom.clientTop;//元素的上边框
+    while(dom){
+        l = l + dom.offsetLeft + dom.clientLeft;
+        t = t + dom.offsetTop + dom.clientTop;
+        dom = dom.offsetParent;
+    }
+    return {
+        left:l-bdl,
+        top:t-bdt
+    };
+}
+</script>
+</body>
+</html>

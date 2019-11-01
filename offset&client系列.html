@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Document</title>
+<style>
+*{
+    margin: 0;
+    padding: 0;
+}
+.box1{
+    width: 600px;
+    height: 400px;
+    border: 10px solid #000;
+    padding: 50px;
+    margin: 50px;
+    position: relative;
+}
+.box2{
+    width: 300px;
+    height: 200px;
+    border: 10px solid red;
+    padding: 50px;
+    position: relative;
+}
+.box3{
+    width: 150px;
+    height: 100px;
+    border: 10px solid pink;
+}
+</style>
+</head>
+<body>
+
+<div class="box1">
+    <div class="box2">
+        <div class="box3"></div>
+    </div>
+</div>
+
+<script>
+var box1 = document.querySelector('.box1');
+var box2 = document.querySelector('.box2');
+var box3 = document.querySelector('.box3');
+// offsetLeft offsetTop 
+// offsetHeight offsetWidth  包含边框和padding
+// clientWidth clientHeight  包含padding,不包含边框
+// clientLeft clientTop  实际效果和元素边框一样
+console.log( box3.offsetLeft );//50
+var ofl = box3.offsetLeft + box2.clientLeft + box2.offsetLeft + box1.clientLeft + box1.offsetLeft;
+
+console.log( ofl );// 170
+// console.log(box1.clientLeft);//10  实际效果和元素边框一样
+
+// offsetParent 指向离元素最近的定位父级
+
+// console.log( box3.offsetParent );//box2
+// console.log( document.body.offsetParent );//null
+
+
+// 封装获取元素到body的距离
+function offset(dom){
+    var l = 0;
+    var t = 0;
+    var bdl = dom.clientLeft;//元素的左边框
+    var bdt = dom.clientTop;//元素的上边框
+    while(dom){
+        l = l + dom.offsetLeft + dom.clientLeft;
+        t = t + dom.offsetTop + dom.clientTop;
+        dom = dom.offsetParent;
+    }
+    return {
+        left:l-bdl,
+        top:t-bdt
+    };
+}
+
+// console.log( offset() );//456
+// console.log( (123,456,789) );//789
+
+// console.log( offset()[0] );
+console.log( offset(box3).left );//180
+
+
+// var num = 0;
+// for(var x = 0,y = 0; x < 6, y<9;x++,y++){
+//     num += x;
+// }
+// console.log(num);//36
+
+
+</script>
+</body>
+</html>
